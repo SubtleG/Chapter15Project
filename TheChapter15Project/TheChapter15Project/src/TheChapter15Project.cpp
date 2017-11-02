@@ -7,9 +7,20 @@
 //============================================================================
 
 #include <iostream>
+#include "Order.hpp"
+#include "Customer.hpp"
 using namespace std;
 
 int main() {
+
+	vector<Customer*> theCustomers;
+
+
+
+	vector<Order*> theOrders;
+
+
+
 	cout << "Program ending, Have a nice day!" << endl; // prints Program ending, Have a nice day!
 	return 0;
 }

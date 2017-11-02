@@ -12,6 +12,12 @@ class Date {
 public:
 	Date();
 	virtual ~Date();
+
+	int year;
+	int month;
+	int day;
+
+
 };
 
 #endif /* DATE_HPP_ */
