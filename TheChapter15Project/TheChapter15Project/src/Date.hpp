@@ -7,11 +7,16 @@
 
 #ifndef DATE_HPP_
 #define DATE_HPP_
+#include <string>
 
 class Date {
 public:
 	Date();
 	virtual ~Date();
+
+	Date(int, int, int);
+
+	std::string getDateString(void);
 
 	int year;
 	int month;

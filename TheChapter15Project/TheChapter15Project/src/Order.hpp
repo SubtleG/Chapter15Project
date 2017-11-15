@@ -9,6 +9,9 @@
 #define ORDER_HPP_
 #include "Date.hpp"
 #include "OrderItem.hpp"
+#include "FoodItem.hpp"
+#include "ElectronicItem.hpp"
+#include "MediaItem.hpp"
 #include "Customer.hpp"
 #include <string>
 #include <vector>
@@ -18,6 +21,8 @@ class Order {
 public:
 	Order();
 	virtual ~Order();
+
+	Order(vector<Customer*>, string);
 
 	void readFoodItems();
 	void readMediaItems();

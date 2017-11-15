@@ -10,7 +10,7 @@
 
 #include "OrderItem.hpp"
 
-enum Type{
+enum class Type{
 	TV, PS4, DVDPlayer, Phone
 };
 
@@ -23,7 +23,7 @@ public:
 
 	Type getType(void);
 	int getWarrantyMonths(void);
-	void setType(Type);
+	void setType(int);
 	void setWarrantyMonths(int);
 
 private:

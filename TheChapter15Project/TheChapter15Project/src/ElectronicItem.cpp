@@ -26,8 +26,8 @@ Type ElectronicItem::getType(void){
 int ElectronicItem::getWarrantyMonths(void){
 	return warrantyMonths;
 }
-void ElectronicItem::setType(Type tempType){
-	type = tempType;
+void ElectronicItem::setType(int tempType){
+	type = static_cast<Type>(tempType);
 }
 void ElectronicItem::setWarrantyMonths(int tempWar){
 	warrantyMonths = tempWar;

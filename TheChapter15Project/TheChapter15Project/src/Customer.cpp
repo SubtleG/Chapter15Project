@@ -6,9 +6,12 @@
  */
 
 #include "Customer.hpp"
+#include <iostream>
+
 
 Customer::Customer() {
 	// TODO Auto-generated constructor stub
+	cout << "You are creating a customer" << endl;
 	customerNumber = "unknown";
 	customerName  = "unknown";
 	email  = "unknown";
@@ -17,6 +20,7 @@ Customer::Customer() {
 
 Customer::~Customer() {
 	// TODO Auto-generated destructor stub
+	//cout << "You are destroying a customer" << endl;
 }
 
 string Customer::getCustomerNumber(void){
@@ -30,6 +34,11 @@ string Customer::getEmail(void){
 }
 Date Customer::getDateJoined(void){
 	return dateJoined;
+}
+string Customer::getDateJoinedString(void){
+	string joinDate;
+	joinDate = (this->dateJoined.getDateString());
+	return joinDate;
 }
 void Customer::setCustomerNumber(string tempNum){
 	customerNumber = tempNum;

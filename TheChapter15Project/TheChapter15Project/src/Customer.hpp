@@ -20,6 +20,7 @@ public:
 	string getCustomerName(void);
 	string getEmail(void);
 	Date getDateJoined(void);
+	string getDateJoinedString(void);
 	void setCustomerNumber(string);
 	void setCustomerName(string);
 	void setEmail(string);
