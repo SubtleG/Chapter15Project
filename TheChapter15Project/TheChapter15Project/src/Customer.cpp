@@ -11,7 +11,7 @@
 
 Customer::Customer() {
 	// TODO Auto-generated constructor stub
-	cout << "You are creating a customer" << endl;
+	//cout << "You are creating a customer" << endl;
 	customerNumber = "unknown";
 	customerName  = "unknown";
 	email  = "unknown";

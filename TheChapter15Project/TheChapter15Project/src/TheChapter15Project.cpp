@@ -15,79 +15,51 @@
 #include "Order.hpp"
 #include "OrderItem.hpp"
 #include "FoodItem.hpp"
+#include "ElectronicItem.hpp"
+#include "MediaItem.hpp"
 #include "Date.hpp"
 #include "Customer.hpp"
 using namespace std;
 
-//bool readCustomers(string, vector<Customer*>);
-//bool readOrders(string);
+void printFood(vector<OrderItem*> ordPtr, string);
+void printMedia(vector<OrderItem*> ordPtr, string);
+void printElectronics(vector<OrderItem*> ordPtr, string);
 
 int main() {
 
 	//#1
 	vector<Customer*> theCustomers;
-	Customer *tempCust = new Customer();
+	//Customer *tempCust = new Customer();
 
 	//#2
-//	newCust.setCustomerName("steve");
-//	newCust.setCustomerNumber("cust007");
-//	newCust.setEmail("guesswho@gmail.com");
-//
-//	cout << newCust.getCustomerName() << endl;
-//	cout << newCust.getCustomerNumber() << endl;
-//	cout << newCust.getEmail() << endl;
-//	theCustomers.push_back(&newCust);
-//
-//	cout << theCustomers[0]->getCustomerName() << endl;
-//	cout << theCustomers[0]->getCustomerNumber() << endl;
-//	cout << theCustomers[0]->getEmail() << endl;
-//	string testStr = "123456789";
-//	int testInt = stoi(testStr);
-//	cout << testInt << endl;
-
 	ifstream custFile;
 	if (custFile.fail()){
 		cout << "Error opening file " << endl;
 	}
 	else{
-		//can start a while !eof loop
 		custFile.open("CustomerFile.txt");
-		string custNum, custName, custEmail, year, month, day;
-		custFile >> custNum >> custName >> custEmail >> year >> month >> day;
-//		custFile >> custNum;
-//		custFile >> custName;
-//		custFile >> custEmail;
-//		custFile >> year;
-//		custFile >> month;
-//		custFile >> day;
-		Customer *custNum1 = new Customer;
-		custNum1->setCustomerNumber(custNum);
-		custNum1->setCustomerName(custName);
-    	custNum1->setEmail(custEmail);
-    	int iYear = stoi(year);
-    	int iMonth = stoi(month);
-    	int iDay = stoi(day);
-    	Date custJoin(iDay, iMonth, iYear);
-    	custNum1->setDateJoined(custJoin);
-    	theCustomers.push_back(custNum1);
-//		cout << custNum1.getCustomerName() << endl;
-//		cout << custNum1.getCustomerNumber() << endl;
-//		cout << custNum1.getEmail() << endl;
-//
-//		cout << theCustomers[0]->getCustomerName() << endl;
-//		cout << theCustomers[0]->getCustomerNumber() << endl;
-//		cout << theCustomers[0]->getEmail() << endl;
-//
-// 		cout << theCustomers[0]->getDateJoinedString() << endl;
+		while(!(custFile.eof())){
+			string custNum, custName, custEmail, year, month, day;
+			custFile >> custNum >> custName >> custEmail >> year >> month >> day;
+			Customer *custNum1 = new Customer;
+			custNum1->setCustomerNumber(custNum);
+			custNum1->setCustomerName(custName);
+			custNum1->setEmail(custEmail);
+			int iYear = stoi(year);
+			int iMonth = stoi(month);
+			int iDay = stoi(day);
+			Date custJoin(iDay, iMonth, iYear);
+			custNum1->setDateJoined(custJoin);
+			theCustomers.push_back(custNum1);
+		}
     	custFile.close();
 	}
-
-	tempCust = nullptr;
-	delete []tempCust;
+//	tempCust = nullptr;
+//	delete []tempCust;
 
 	//#3
 	vector<Order*> theOrders;
-	Order *tempOrder = new Order();
+//	Order *tempOrder = new Order();
 
 	//#4
 	ifstream orderFile;
@@ -95,93 +67,139 @@ int main() {
 		cout << "Error opening file " << endl;
 	}
 	else{
-
 		orderFile.open("OrderFile.txt");
-		string ordID, ordYear, ordMonth, ordDay, custNum;
-		orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
-		// can check for existing customer with custNum to see if they exist
-
-		Order ordNum1(theCustomers, custNum);
-		ordNum1.setOrderNumber(ordID);
-    	int iYear = stoi(ordYear);
-    	int iMonth = stoi(ordMonth);
-    	int iDay = stoi(ordDay);
-    	Date ordDate(iDay, iMonth, iYear);
-		ordNum1.setOrderDate(ordDate);
-    	theOrders.push_back(&ordNum1);
-
+		while(!(orderFile.eof())){
+			string ordID, ordYear, ordMonth, ordDay, custNum;
+			orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
+			// can check for existing customer with custNum to see if they exist
+			Order *tempOrder = new Order(theCustomers, custNum, ordID);
+			//Order ordNum1(theCustomers, custNum);
+			tempOrder->setOrderNumber(ordID);
+			int iYear = stoi(ordYear);
+			int iMonth = stoi(ordMonth);
+			int iDay = stoi(ordDay);
+			Date ordDate(iDay, iMonth, iYear);
+			tempOrder->setOrderDate(ordDate);
+			theOrders.push_back(tempOrder);
+		}
     	orderFile.close();
 	}
-	tempOrder = nullptr;
-	delete []tempOrder;
+//	tempOrder = nullptr;
+//	delete []tempOrder;
 
 	//#5
 	//Prints out the order report
+	cout << endl;
 	cout << "Order Report:" << endl;
+
 
 	for(unsigned int i = 0; i < theOrders.size(); i++){
 		cout << "==============================" << endl;
 		cout << setw(15) << "Order ID" << setw(20) << "Customer ID" << setw(20) << "Order Date" << setw(40) << "Customer" << endl;
 		cout << setw(15) << "--------" << setw(20) << "-----------" << setw(20) << "----------" << setw(40) << "--------" << endl;
-		cout << setw(15) << theOrders[i]->getOrderNumber() << setw(20) << theOrders[i]->getOrderCustomer().getCustomerNumber() << setw(20) << theOrders[i]->getOrderDate().getDateString()\
+		cout << setw(15) << theOrders[i]->getOrderNumber() << setw(20) << theOrders[i]->getOrderCustomer().getCustomerNumber() << setw(20) << theOrders[i]->getOrderDate().getDateString()
 			<< setw(40) << theOrders[i]->getOrderCustomer().getCustomerName() << endl;
+
+		vector<OrderItem*>tempVect = theOrders[i]->getItemsInOrder();
+//		if(tempVect[i]->whoAmI() == "FoodItem"){
 		//FoodItems
 		cout << "---------------" << endl;
-		cout << setw(20) << "Food Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "Calories" << setw(20) << "Cost" << endl;
-		cout << setw(20) << "-------------------" << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "--------" << setw(20) << "----" << endl;
-		//cout << setw(20) << "-------------------" << setw(20) << static_cast<FoodItem*>(theOrders[i])->getItemNumber() << setw(40) << dynamic_cast<FoodItem*>(theOrders[i])->getItemDescription() << setw(20) << dynamic_cast<FoodItem*>(theOrders[i])->getCalories() << setw(20) << dynamic_cast<FoodItem*>(theOrders[i])->getCustomerCost() << endl;
-
-
+		cout << setw(20) << "Food Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "Calories" << setw(10) << "Cost" << endl;
+		cout << setw(20) << "                   " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "--------" << setw(10) << "----" << endl;
+		printFood(tempVect, theOrders[i]->getOrderNumber());
+//		}
+//		if(tempVect[i]->whoAmI() == "MediaItem"){
+		//MediaItems
+		cout << "---------------" << endl;
+		cout << setw(20) << "Media Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "ISBN" << setw(10) << "Cost" << endl;
+		cout << setw(20) << "                    " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "----" << setw(10) << "----" << endl;
+		printMedia(tempVect, theOrders[i]->getOrderNumber());
+//		}
+//		if(tempVect[i]->whoAmI() == "ElectronicItem"){
+		//ElectronicItems
+		cout << "---------------" << endl;
+		cout << setw(20) << "Elec. Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "Warranty" << setw(10) << "Cost" << endl;
+		cout << setw(20) << "                    " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "--------" << setw(10) << "----" << endl;
+		printElectronics(tempVect, theOrders[i]->getOrderNumber());
+//		}
+//		else{
+//			cout << "Cheese it!" << endl;
+//		}
+		//Total
+		cout << "The total for this order will be: $" << theOrders[i]->getTotalOfOrder() << endl;
 	}
-
-
-	cout << endl;
 	cout << endl;
 	cout << "Program ending, Have a nice day!" << endl; // prints Program ending, Have a nice day!
 	return 0;
 }
+
+//void printFood(vector<Customer*>tCustV, vector<Order*>tOrdV){
+//	for (unsigned int i = 0; i < tOrdV.size(); i++){
+//		//FoodItem* tempFoo = new FoodItem();
+//		//tempFoo = dynamic_cast<FoodItem*>(tOrdV[i]->getItemsInOrder().at(i));
+//		cout << setw(20) << "                   " << setw(20) << tOrdV[i]->getItemsInOrder().at(i)<< setw(40) << dynamic_cast<FoodItem*>(tOrdV[i])->getItemDescription() << setw(20) << dynamic_cast<FoodItem*>(tOrdV[i])->getCalories() << setw(10) << dynamic_cast<FoodItem*>(tOrdV[i])->getCustomerCost() << endl;
+//		//cout << setw(20) << "                   " << setw(20) << tempFoo[i].getItemNumber() << setw(40) << tempFoo[i].getItemDescription() << setw(20) << tempFoo[i].getCalories() << setw(10) << tempFoo[i].getCustomerCost() << endl;
 //
-//bool readCustomers(string fileName, vector<Customer*> vectPointer){
-//
-//	string custNum;
-//	string custName;
-//	string custEmail;
-//	//Date custDateJoin;
-//	string year;
-//	string month;
-//	string day;
-//	ifstream custFile(fileName);
-//	  if (custFile.is_open())
-//	  {
-//	    custFile >> custNum >> custName >> custEmail >> year >> month >> day;
-//
-//	    vectPointer.push_back();
-//	    custFile.close();
-//	  }
-//	  else{
-//		  cout << "Error opening file " << fileName << endl;
-//	  }
-//
-//	return true;
+////		//delete []tempFoo;
+////		delete tempFoo;
+////		string tempStr = dynamic_cast<FoodItem*>(tOrdV[i])->getOrderNumber();
+////		cout << tempStr << endl;
+////		cout << setw(20) << "--------------------" << endl;
+////		cout << endl;
+////		//string tempStr = dynamic_cast<FoodItem*>(theOrders[0])->getOrderNumber();
+////		//	cout << static_cast<FoodItem*>(theOrders[0])->getItemNumber() << endl;
+//	}
 //}
-//
-//bool readOrders(string fileName){
-//	string orderNum;
-//	//Date custDateJoin;
-//	string year;
-//	string month;
-//	string day;
-//	string custNum;
-//	ifstream custFile(fileName);
-//	  if (custFile.is_open())
-//	  {
-//	    custFile >> orderNum >> year >> month >> day >> custNum;
-//	    custFile.close();
-//	  }
-//	  else{
-//		  cout << "Error opening file " << fileName << endl;
-//	  }
-//
-//	return true;
-//}
-//
+void printFood(vector<OrderItem*> ordPtr, string tempStr){
+//	cout << ordPtr.size() << endl;
+	//FoodItem *tempFoodI = new FoodItem();
+	//tempFoodI =	dynamic_cast<FoodItem*>(ordPtr[0]->getItemNumber());
+	for (unsigned int i = 0; i < ordPtr.size(); i++){
+		if(ordPtr[i]->getOrderNumber() != tempStr || ordPtr[i]->whoAmI() != "FoodItem"){
+			continue;
+		}
+		else if(ordPtr[i]->getOrderNumber() == tempStr && ordPtr[i]->whoAmI() == "FoodItem"){
+			cout << setw(20) << " " << setw(20) << dynamic_cast<FoodItem*>(ordPtr[i])->getItemNumber()
+				<< setw(40) << dynamic_cast<FoodItem*>(ordPtr[i])->getItemDescription()
+				<< setw(20) << dynamic_cast<FoodItem*>(ordPtr[i])->getCalories()
+				<< setw(10) << dynamic_cast<FoodItem*>(ordPtr[i])->getCustomerCost() << endl;
+		}
+		else{
+			cout << "Something went wrong in the print food function" << endl;
+		}
+	}
+}
+void printMedia(vector<OrderItem*> ordPtr, string tempStr){
+//	cout << ordPtr.size() << endl;
+	for (unsigned int i = 0; i < ordPtr.size(); i++){
+		if(ordPtr[i]->getOrderNumber() != tempStr || ordPtr[i]->whoAmI() != "MediaItem"){
+			continue;
+		}
+		else if(ordPtr[i]->getOrderNumber() == tempStr && ordPtr[i]->whoAmI() == "MediaItem"){
+			cout << setw(20) << " " << setw(20) << dynamic_cast<MediaItem*>(ordPtr[i])->getItemNumber()
+				<< setw(40) << dynamic_cast<MediaItem*>(ordPtr[i])->getItemDescription()
+				<< setw(20) << dynamic_cast<MediaItem*>(ordPtr[i])->getISBNNumber()
+				<< setw(10) << dynamic_cast<MediaItem*>(ordPtr[i])->getCustomerCost() << endl;
+		}
+		else{
+			cout << "Something went wrong in the print media function" << endl;
+		}
+	}
+}
+void printElectronics(vector<OrderItem*> ordPtr, string tempStr){
+//	cout << ordPtr.size() << endl;
+	for (unsigned int i = 0; i < ordPtr.size(); i++){
+		if(ordPtr[i]->getOrderNumber() != tempStr || ordPtr[i]->whoAmI() != "ElectronicItem"){
+			continue;
+		}
+		else if(ordPtr[i]->getOrderNumber() == tempStr && ordPtr[i]->whoAmI() == "ElectronicItem"){
+			cout << setw(20) << " " << setw(20) << dynamic_cast<ElectronicItem*>(ordPtr[i])->getItemNumber()
+				<< setw(40) << dynamic_cast<ElectronicItem*>(ordPtr[i])->getItemDescription()
+				<< setw(20) << dynamic_cast<ElectronicItem*>(ordPtr[i])->getWarrantyMonths()
+				<< setw(10) << dynamic_cast<ElectronicItem*>(ordPtr[i])->getCustomerCost() << endl;
+		}
+		else{
+			cout << "Something went wrong in the print Electronics function" << endl;
+		}
+	}
+}

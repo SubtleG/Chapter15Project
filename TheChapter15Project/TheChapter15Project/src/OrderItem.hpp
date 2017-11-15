@@ -15,7 +15,7 @@ public:
 	OrderItem();
 	virtual ~OrderItem();
 
-
+	virtual string whoAmI(void) = 0;
 
 	string getOrderNumber(void);
 	string getItemNumber(void);

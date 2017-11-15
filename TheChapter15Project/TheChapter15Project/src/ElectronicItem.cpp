@@ -9,7 +9,8 @@
 
 ElectronicItem::ElectronicItem() {
 	// TODO Auto-generated constructor stub
-
+	type = static_cast<Type>(0);
+	warrantyMonths = 0;
 }
 
 ElectronicItem::~ElectronicItem() {

@@ -9,7 +9,9 @@
 
 Date::Date() {
 	// TODO Auto-generated constructor stub
-
+	year = 0;
+	month = 0;
+	day = 0;
 }
 
 Date::~Date() {

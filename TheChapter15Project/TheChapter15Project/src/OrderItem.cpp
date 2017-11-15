@@ -9,13 +9,18 @@
 
 OrderItem::OrderItem() {
 	// TODO Auto-generated constructor stub
-
+	taxExempt = false;
+	vendorCost = 0;
+	quantity = 0;
+	customerCost = 0;
 }
 
 OrderItem::~OrderItem() {
 	// TODO Auto-generated destructor stub
 }
-
+string OrderItem::whoAmI(void){
+	return "OrderItem";
+}
 string OrderItem::getOrderNumber(void){
 	return orderNumber;
 }

@@ -9,7 +9,8 @@
 
 FoodItem::FoodItem() {
 	// TODO Auto-generated constructor stub
-
+	fat = 0;
+	calories = 0;
 }
 
 FoodItem::~FoodItem() {
