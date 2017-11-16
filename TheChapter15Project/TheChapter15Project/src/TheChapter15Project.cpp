@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <stdio.h>
 #include "Order.hpp"
 #include "OrderItem.hpp"
 #include "FoodItem.hpp"
@@ -22,8 +23,10 @@ using namespace std;
 void printFood(vector<OrderItem*> ordPtr, string);
 void printMedia(vector<OrderItem*> ordPtr, string);
 void printElectronics(vector<OrderItem*> ordPtr, string);
+const char* stoc(string);
+string ctos(const char*[], int);
 
-int main(int argc, const char* argv[]) {
+int main(int argc, const char *argv[]) {
 
 	//#7
 	if (argc > 2 || argc < 1){
@@ -42,7 +45,6 @@ int main(int argc, const char* argv[]) {
 		cout << "Error opening file " << endl;
 	}
 	else{
-
 		while(!(custFile.eof())){
 			string custNum, custName, custEmail;
 			int year, month, day;
@@ -80,9 +82,10 @@ int main(int argc, const char* argv[]) {
 			int ordYear, ordMonth, ordDay;
 			orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
 			// can check for existing customer with custNum to see if they exist
-			Order *tempOrder = new Order(theCustomers, custNum, ordID);
-			//Order ordNum1(theCustomers, custNum)
-			if(tempOrder == nullptr){
+			Order *tempOrder = new Order(&theCustomers, custNum, ordID);
+//			//Order ordNum1(theCustomers, custNum)
+//			"FAILFAILFAIL"
+			if(tempOrder->getOrderNumber() == "FAILFAILFAIL"){
 				delete tempOrder;
 			}
 			else{
@@ -103,9 +106,12 @@ int main(int argc, const char* argv[]) {
 	int ordPlaceNum = 0;
 	if (argc == 2){
 		//Only print the order that was sent in
-		string customerInput = argv[argc];
+
+		//error here cant convert const chr* to string
 		for(unsigned int i = 0; i < numTimes; i++){
-			if(theOrders[i]->getOrderNumber() == customerInput){
+			//const char* tempCha = (theOrders[i]->getOrderNumber()).c_str();
+			//cout << argv[argc] << endl;
+			if(theOrders[i]->getOrderNumber() == argv[argc-1]){
 				ordPlaceNum = i;
 				numTimes = i+1;
 				break;
@@ -121,6 +127,7 @@ int main(int argc, const char* argv[]) {
 		//Print everything
 		numTimes = theOrders.size();
 	}
+
 	//#5
 	//Prints out the order report
 	cout << endl;
@@ -259,4 +266,17 @@ void printElectronics(vector<OrderItem*> ordPtr, string tempStr){
 			cout << "Something went wrong in the print Electronics function" << endl;
 		}
 	}
+}
+
+const char* stoc(string tempStr){
+	const char* tempCharPtr = tempStr.c_str();
+	return tempCharPtr;
+}
+string ctos(const char* tempChr[], int loc){
+	string retStr;
+//	for(int i = 0; i <)
+	retStr = tempChr[loc];
+	cout<< tempChr[loc] << endl;
+	cout << retStr << endl;
+	return retStr;
 }

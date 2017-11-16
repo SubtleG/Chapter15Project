@@ -22,7 +22,7 @@ public:
 	Order();
 	virtual ~Order();
 
-	Order(vector<Customer*>, string, string);
+	Order(vector<Customer*>*, string, string);
 
 	void readFoodItems();
 	void readMediaItems();

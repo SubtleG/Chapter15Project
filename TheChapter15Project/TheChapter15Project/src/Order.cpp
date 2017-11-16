@@ -16,13 +16,13 @@ Order::Order() {
 	readMediaItems();
 	readElectronicItems();
 }
-Order::Order(vector<Customer*> tempPoint, string custID, string orderNum){
+Order::Order(vector<Customer*>* tempPoint, string custID, string orderNum){
 	//if cust exists read files
 	bool exists = true;
-	for(unsigned int i = 0;  i < tempPoint.size(); i++){
-		if (tempPoint[i]->getCustomerNumber() == custID){
-			orderCustomer = tempPoint[i];
-			orderNumber = orderNum;
+	for(unsigned int i = 0;  i < tempPoint->size(); i++){
+		if (tempPoint->at(i)->getCustomerNumber() == custID){
+			this->orderCustomer = tempPoint->at(i);
+			this->orderNumber = orderNum;
 			exists = true;
 			break;
 		}
@@ -37,12 +37,14 @@ Order::Order(vector<Customer*> tempPoint, string custID, string orderNum){
 		readElectronicItems();
 	}
 	else{
-		orderCustomer = nullptr;
+		this->orderCustomer = nullptr;
 		cout << "The customer " << custID << " was not found." << endl;
+		orderNumber = "FAILFAILFAIL";
 	}
 }
 Order::~Order() {
 	// TODO Auto-generated destructor stub
+	itemsInOrder.clear();
 }
 
 void Order::readFoodItems(){
