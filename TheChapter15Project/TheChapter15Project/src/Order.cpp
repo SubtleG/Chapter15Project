@@ -155,8 +155,9 @@ void Order::readElectronicItems(){
 	}
 	else{
 		while(!(ElectronicFile.eof())){
-			string ordNum, itemNum, itemDesc, quantity, price, cost,\
-			taxEx, type, warrMonths;
+			string ordNum, itemNum, itemDesc, taxEx, type;
+			int quantity, warrMonths;
+			double price, cost;
 			ElectronicFile >> ordNum >>itemNum >> itemDesc >> quantity >> price \
 			>> cost >> taxEx >> type >> warrMonths;
 			if(ordNum != orderNumber){
@@ -167,12 +168,12 @@ void Order::readElectronicItems(){
 				tempElectronicItem->setOrderNumber(ordNum);
 				tempElectronicItem->setItemNumber(itemNum);
 				tempElectronicItem->setItemDescription(itemDesc);
-				int iquant = stoi(quantity);
-				tempElectronicItem->setQuantity(iquant);
-				double dPrice = stod(price);
-				tempElectronicItem->setCustomerCost(dPrice);
-				double dCost = stod(cost);
-				tempElectronicItem->setVendorCost(dCost);
+				//int iquant = stoi(quantity);
+				tempElectronicItem->setQuantity(quantity);
+				//double dPrice = stod(price);
+				tempElectronicItem->setCustomerCost(price);
+				//double dCost = stod(cost);
+				tempElectronicItem->setVendorCost(cost);
 				bool taxed;
 				if(taxEx == "Y" || taxEx == "y"){
 					taxed = true;
@@ -186,6 +187,7 @@ void Order::readElectronicItems(){
 				tempElectronicItem->setTaxExempt(taxed);
 				int intType = stoi(type);
 				tempElectronicItem->setType(intType);
+				tempElectronicItem->setWarrantyMonths(warrMonths);
 				itemsInOrder.push_back(tempElectronicItem);
 			}
 		}

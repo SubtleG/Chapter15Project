@@ -23,7 +23,13 @@ void printFood(vector<OrderItem*> ordPtr, string);
 void printMedia(vector<OrderItem*> ordPtr, string);
 void printElectronics(vector<OrderItem*> ordPtr, string);
 
-int main() {
+int main(int argc, const char* argv[]) {
+
+	//#7
+	if (argc > 2 || argc < 1){
+		cout <<"Error! Invalid number of arguments." << endl;
+		return 1;
+	}
 
 	//#1
 	vector<Customer*> theCustomers;
@@ -75,52 +81,96 @@ int main() {
 			orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
 			// can check for existing customer with custNum to see if they exist
 			Order *tempOrder = new Order(theCustomers, custNum, ordID);
-			//Order ordNum1(theCustomers, custNum);
-			tempOrder->setOrderNumber(ordID);
-			Date ordDate(ordDay, ordMonth, ordYear);
-			tempOrder->setOrderDate(ordDate);
-			theOrders.push_back(tempOrder);
+			//Order ordNum1(theCustomers, custNum)
+			if(tempOrder == nullptr){
+				delete tempOrder;
+			}
+			else{
+				tempOrder->setOrderNumber(ordID);
+				Date ordDate(ordDay, ordMonth, ordYear);
+				tempOrder->setOrderDate(ordDate);
+				theOrders.push_back(tempOrder);
+			}
 		}
     	orderFile.close();
 	}
 //	tempOrder = nullptr;
 //	delete []tempOrder;
 
+
+	//#7
+	unsigned int numTimes = theOrders.size();
+	int ordPlaceNum = 0;
+	if (argc == 2){
+		//Only print the order that was sent in
+		string customerInput = argv[argc];
+		for(unsigned int i = 0; i < numTimes; i++){
+			if(theOrders[i]->getOrderNumber() == customerInput){
+				ordPlaceNum = i;
+				numTimes = i+1;
+				break;
+			}
+		}
+		if(numTimes > theOrders.size()){
+			cout << "Couldn't find that order" << endl;
+			return 1;
+		}
+
+	}
+	if (argc == 1){
+		//Print everything
+		numTimes = theOrders.size();
+	}
 	//#5
 	//Prints out the order report
 	cout << endl;
 	cout << "Order Report:" << endl;
 
 
-	for(unsigned int i = 0; i < theOrders.size(); i++){
+	for(unsigned int i = ordPlaceNum; i < numTimes; i++){
+		vector<OrderItem*>tempVect = theOrders[i]->getItemsInOrder();
+		bool haveFood = false;
+		bool haveMedia = false;
+		bool haveElec = false;
+		for(unsigned int c = 0; c < tempVect.size(); c++){
+			if(tempVect[c]->whoAmI() == "FoodItem"){
+				haveFood = true;
+			}
+			if(tempVect[c]->whoAmI() == "MediaItem"){
+				haveMedia = true;
+			}
+			if(tempVect[c]->whoAmI() == "ElectronicItem"){
+				haveElec = true;
+			}
+		}
 		cout << "==============================" << endl;
 		cout << setw(15) << "Order ID" << setw(20) << "Customer ID" << setw(20) << "Order Date" << setw(40) << "Customer" << endl;
 		cout << setw(15) << "--------" << setw(20) << "-----------" << setw(20) << "----------" << setw(40) << "--------" << endl;
 		cout << setw(15) << theOrders[i]->getOrderNumber() << setw(20) << theOrders[i]->getOrderCustomer().getCustomerNumber() << setw(20) << theOrders[i]->getOrderDate().getDateString()
 			<< setw(40) << theOrders[i]->getOrderCustomer().getCustomerName() << endl;
 
-		vector<OrderItem*>tempVect = theOrders[i]->getItemsInOrder();
-//		if(tempVect[i]->whoAmI() == "FoodItem"){
-		//FoodItems
-		cout << "---------------" << endl;
-		cout << setw(20) << "Food Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "Calories" << setw(10) << "Cost" << endl;
-		cout << setw(20) << "                   " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "--------" << setw(10) << "----" << endl;
-		printFood(tempVect, theOrders[i]->getOrderNumber());
-//		}
-//		if(tempVect[i]->whoAmI() == "MediaItem"){
-		//MediaItems
-		cout << "---------------" << endl;
-		cout << setw(20) << "Media Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "ISBN" << setw(10) << "Cost" << endl;
-		cout << setw(20) << "                    " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "----" << setw(10) << "----" << endl;
-		printMedia(tempVect, theOrders[i]->getOrderNumber());
-//		}
-//		if(tempVect[i]->whoAmI() == "ElectronicItem"){
-		//ElectronicItems
-		cout << "---------------" << endl;
-		cout << setw(20) << "Elec. Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "Warranty" << setw(10) << "Cost" << endl;
-		cout << setw(20) << "                    " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "--------" << setw(10) << "----" << endl;
-		printElectronics(tempVect, theOrders[i]->getOrderNumber());
-//		}
+
+		if(haveFood){
+			//FoodItems
+			cout << "---------------" << endl;
+			cout << setw(20) << "Food Items Ordered: " << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "Calories" << setw(10) << "Cost" << endl;
+			cout << setw(20) << "                   " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "--------" << setw(10) << "----" << endl;
+			printFood(tempVect, theOrders[i]->getOrderNumber());
+		}
+		if(haveMedia){
+			//MediaItems
+			cout << "---------------" << endl;
+			cout << setw(20) << "Media Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "ISBN" << setw(10) << "Cost" << endl;
+			cout << setw(20) << "                    " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "----" << setw(10) << "----" << endl;
+			printMedia(tempVect, theOrders[i]->getOrderNumber());
+		}
+		if(haveElec){
+			//ElectronicItems
+			cout << "---------------" << endl;
+			cout << setw(20) << "Elec. Items Ordered:" << setw(20) << "Item Number" << setw(40) << "Item Description" << setw(20) << "Warranty" << setw(10) << "Cost" << endl;
+			cout << setw(20) << "                    " << setw(20) << "-----------" << setw(40) << "----------------" << setw(20) << "--------" << setw(10) << "----" << endl;
+			printElectronics(tempVect, theOrders[i]->getOrderNumber());
+		}
 //		else{
 //			cout << "Cheese it!" << endl;
 //		}
