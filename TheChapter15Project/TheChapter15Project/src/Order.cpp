@@ -47,11 +47,11 @@ Order::~Order() {
 
 void Order::readFoodItems(){
 	ifstream foodFile;
+	foodFile.open("FoodItems.txt");
 	if (foodFile.fail()){
-		cout << "Error opening file " << endl;
+		cout << "Error opening food file " << endl;
 	}
 	else{
-		foodFile.open("FoodItems.txt");
 		while(!(foodFile.eof())){
 			string ordNum, itemNum, itemDesc, quantity, price, cost,\
 			taxEx, expYear, expMonth, expDay, calories, fat;
@@ -99,11 +99,11 @@ void Order::readFoodItems(){
 }
 void Order::readMediaItems(){
 	ifstream mediaFile;
+	mediaFile.open("MediaItems.txt");
 	if (mediaFile.fail()){
-		cout << "Error opening file " << endl;
+		cout << "Error opening media file " << endl;
 	}
 	else{
-		mediaFile.open("MediaItems.txt");
 		while(!(mediaFile.eof())){
 			string ordNum, itemNum, itemDesc, quantity, price, cost,\
 			taxEx, pubYear, pubMonth, pubDay, author, ISBN;
@@ -149,11 +149,11 @@ void Order::readMediaItems(){
 }
 void Order::readElectronicItems(){
 	ifstream ElectronicFile;
+	ElectronicFile.open("ElectronicItems.txt");
 	if (ElectronicFile.fail()){
-		cout << "Error opening file " << endl;
+		cout << "Error opening electronic file " << endl;
 	}
 	else{
-		ElectronicFile.open("ElectronicItems.txt");
 		while(!(ElectronicFile.eof())){
 			string ordNum, itemNum, itemDesc, quantity, price, cost,\
 			taxEx, type, warrMonths;
@@ -198,8 +198,6 @@ double Order::getTotalOfOrder(){
 		tot += (itemsInOrder[i]->getCustomerCost()*itemsInOrder[i]->getQuantity());
 	}
 	return tot;
-	//When I Debugged this it added both foodtext items, then skipped mediaitems, then added 1 item from elec. items before exiting.
-	//no matter which order called it.
 }
 string Order::getOrderNumber(void){
 	return orderNumber;

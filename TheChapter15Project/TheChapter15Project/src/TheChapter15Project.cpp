@@ -6,8 +6,6 @@
 //Date completed: 11/15/2017
 //Operating system used: Windows
 //IDE Used:  Eclipse neon
-
-
 //*****************
 #include <iostream>
 #include <fstream>
@@ -33,22 +31,23 @@ int main() {
 
 	//#2
 	ifstream custFile;
+	custFile.open("CustomerFile.txt");
 	if (custFile.fail()){
 		cout << "Error opening file " << endl;
 	}
 	else{
-		custFile.open("CustomerFile.txt");
+
 		while(!(custFile.eof())){
-			string custNum, custName, custEmail, year, month, day;
+			string custNum, custName, custEmail;
+			int year, month, day;
+//			//test for infinite loop
+//			cout << "custLoop" << endl;
 			custFile >> custNum >> custName >> custEmail >> year >> month >> day;
 			Customer *custNum1 = new Customer;
 			custNum1->setCustomerNumber(custNum);
 			custNum1->setCustomerName(custName);
 			custNum1->setEmail(custEmail);
-			int iYear = stoi(year);
-			int iMonth = stoi(month);
-			int iDay = stoi(day);
-			Date custJoin(iDay, iMonth, iYear);
+			Date custJoin(day, month, year);
 			custNum1->setDateJoined(custJoin);
 			theCustomers.push_back(custNum1);
 		}
@@ -69,16 +68,16 @@ int main() {
 	else{
 		orderFile.open("OrderFile.txt");
 		while(!(orderFile.eof())){
-			string ordID, ordYear, ordMonth, ordDay, custNum;
+//			//test for infinite loop
+//			cout << "orderLoop" << endl;
+			string ordID, custNum;
+			int ordYear, ordMonth, ordDay;
 			orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
 			// can check for existing customer with custNum to see if they exist
 			Order *tempOrder = new Order(theCustomers, custNum, ordID);
 			//Order ordNum1(theCustomers, custNum);
 			tempOrder->setOrderNumber(ordID);
-			int iYear = stoi(ordYear);
-			int iMonth = stoi(ordMonth);
-			int iDay = stoi(ordDay);
-			Date ordDate(iDay, iMonth, iYear);
+			Date ordDate(ordDay, ordMonth, ordYear);
 			tempOrder->setOrderDate(ordDate);
 			theOrders.push_back(tempOrder);
 		}
@@ -126,10 +125,16 @@ int main() {
 //			cout << "Cheese it!" << endl;
 //		}
 		//Total
+		cout << endl;
 		cout << "The total for this order will be: $" << theOrders[i]->getTotalOfOrder() << endl;
+		cout << endl;
 	}
 	cout << endl;
 	cout << "Program ending, Have a nice day!" << endl; // prints Program ending, Have a nice day!
+
+	theCustomers.clear();
+	theOrders.clear();
+
 	return 0;
 }
 
@@ -169,6 +174,7 @@ void printFood(vector<OrderItem*> ordPtr, string tempStr){
 		}
 	}
 }
+
 void printMedia(vector<OrderItem*> ordPtr, string tempStr){
 //	cout << ordPtr.size() << endl;
 	for (unsigned int i = 0; i < ordPtr.size(); i++){
@@ -186,6 +192,7 @@ void printMedia(vector<OrderItem*> ordPtr, string tempStr){
 		}
 	}
 }
+
 void printElectronics(vector<OrderItem*> ordPtr, string tempStr){
 //	cout << ordPtr.size() << endl;
 	for (unsigned int i = 0; i < ordPtr.size(); i++){
