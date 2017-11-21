@@ -70,11 +70,11 @@ int main(int argc, const char *argv[]) {
 
 	//#4
 	ifstream orderFile;
+	orderFile.open("OrderFile.txt");
 	if (orderFile.fail()){
 		cout << "Error opening file " << endl;
 	}
 	else{
-		orderFile.open("OrderFile.txt");
 		while(!(orderFile.eof())){
 //			//test for infinite loop
 //			cout << "orderLoop" << endl;
@@ -82,7 +82,11 @@ int main(int argc, const char *argv[]) {
 			int ordYear, ordMonth, ordDay;
 			orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
 			// can check for existing customer with custNum to see if they exist
+
+			// START MEMORY LEAK
 			Order *tempOrder = new Order(&theCustomers, custNum, ordID);
+			// END MEMORY LEAK
+
 //			//Order ordNum1(theCustomers, custNum)
 //			"FAILFAILFAIL"
 			if(tempOrder->getOrderNumber() == "FAILFAILFAIL"){
@@ -106,8 +110,6 @@ int main(int argc, const char *argv[]) {
 	int ordPlaceNum = 0;
 	if (argc == 2){
 		//Only print the order that was sent in
-
-		//error here cant convert const chr* to string
 		for(unsigned int i = 0; i < numTimes; i++){
 			//const char* tempCha = (theOrders[i]->getOrderNumber()).c_str();
 			//cout << argv[argc] << endl;
@@ -195,23 +197,6 @@ int main(int argc, const char *argv[]) {
 	return 0;
 }
 
-//void printFood(vector<Customer*>tCustV, vector<Order*>tOrdV){
-//	for (unsigned int i = 0; i < tOrdV.size(); i++){
-//		//FoodItem* tempFoo = new FoodItem();
-//		//tempFoo = dynamic_cast<FoodItem*>(tOrdV[i]->getItemsInOrder().at(i));
-//		cout << setw(20) << "                   " << setw(20) << tOrdV[i]->getItemsInOrder().at(i)<< setw(40) << dynamic_cast<FoodItem*>(tOrdV[i])->getItemDescription() << setw(20) << dynamic_cast<FoodItem*>(tOrdV[i])->getCalories() << setw(10) << dynamic_cast<FoodItem*>(tOrdV[i])->getCustomerCost() << endl;
-//		//cout << setw(20) << "                   " << setw(20) << tempFoo[i].getItemNumber() << setw(40) << tempFoo[i].getItemDescription() << setw(20) << tempFoo[i].getCalories() << setw(10) << tempFoo[i].getCustomerCost() << endl;
-//
-////		//delete []tempFoo;
-////		delete tempFoo;
-////		string tempStr = dynamic_cast<FoodItem*>(tOrdV[i])->getOrderNumber();
-////		cout << tempStr << endl;
-////		cout << setw(20) << "--------------------" << endl;
-////		cout << endl;
-////		//string tempStr = dynamic_cast<FoodItem*>(theOrders[0])->getOrderNumber();
-////		//	cout << static_cast<FoodItem*>(theOrders[0])->getItemNumber() << endl;
-//	}
-//}
 void printFood(vector<OrderItem*> ordPtr, string tempStr){
 //	cout << ordPtr.size() << endl;
 	//FoodItem *tempFoodI = new FoodItem();
@@ -266,17 +251,4 @@ void printElectronics(vector<OrderItem*> ordPtr, string tempStr){
 			cout << "Something went wrong in the print Electronics function" << endl;
 		}
 	}
-}
-
-const char* stoc(string tempStr){
-	const char* tempCharPtr = tempStr.c_str();
-	return tempCharPtr;
-}
-string ctos(const char* tempChr[], int loc){
-	string retStr;
-//	for(int i = 0; i <)
-	retStr = tempChr[loc];
-	cout<< tempChr[loc] << endl;
-	cout << retStr << endl;
-	return retStr;
 }

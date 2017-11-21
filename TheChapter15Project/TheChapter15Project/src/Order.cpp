@@ -45,6 +45,7 @@ Order::Order(vector<Customer*>* tempPoint, string custID, string orderNum){
 Order::~Order() {
 	// TODO Auto-generated destructor stub
 	itemsInOrder.clear();
+	//for loop?
 }
 
 void Order::readFoodItems(){
@@ -55,8 +56,9 @@ void Order::readFoodItems(){
 	}
 	else{
 		while(!(foodFile.eof())){
-			string ordNum, itemNum, itemDesc, quantity, price, cost,\
-			taxEx, expYear, expMonth, expDay, calories, fat;
+			string ordNum, itemNum, itemDesc, taxEx, calories, fat;
+			int quantity, expYear, expMonth, expDay;
+			double price, cost;
 			foodFile >> ordNum >>itemNum >> itemDesc >> quantity >> price \
 			>> cost >> taxEx >> expYear >> expMonth >> expDay >> calories >> fat;
 			if(ordNum != orderNumber){
@@ -67,12 +69,12 @@ void Order::readFoodItems(){
 				tempFoodItem->setOrderNumber(ordNum);
 				tempFoodItem->setItemNumber(itemNum);
 				tempFoodItem->setItemDescription(itemDesc);
-				int iquant = stoi(quantity);
-				tempFoodItem->setQuantity(iquant);
-				double dPrice = stod(price);
-				tempFoodItem->setCustomerCost(dPrice);
-				double dCost = stod(cost);
-				tempFoodItem->setVendorCost(dCost);
+//				int iquant = stoi(quantity);
+//				double dCost = stod(cost);
+//				double dPrice = stod(price);
+				tempFoodItem->setQuantity(quantity);
+				tempFoodItem->setCustomerCost(price);
+				tempFoodItem->setVendorCost(cost);
 				bool taxed;
 				if(taxEx == "Y" || taxEx == "y"){
 					taxed = true;
@@ -84,10 +86,10 @@ void Order::readFoodItems(){
 					cout << "Tax exemption error, please bribe your representatives." << endl;
 				}
 				tempFoodItem->setTaxExempt(taxed);
-				int intYear = stoi(expYear);
-				int intMonth = stoi(expMonth);
-				int intDay = stoi(expDay);
-				Date expDate(intDay, intMonth, intYear);
+//				int intYear = stoi(expYear);
+//				int intMonth = stoi(expMonth);
+//				int intDay = stoi(expDay);
+				Date expDate(expDay, expMonth, expYear);
 				tempFoodItem->setExpirationDate(expDate);
 				int intCal = stoi(calories);
 				tempFoodItem->setCalories(intCal);
@@ -107,9 +109,10 @@ void Order::readMediaItems(){
 	}
 	else{
 		while(!(mediaFile.eof())){
-			string ordNum, itemNum, itemDesc, quantity, price, cost,\
-			taxEx, pubYear, pubMonth, pubDay, author, ISBN;
-			mediaFile >> ordNum >>itemNum >> itemDesc >> quantity >> price \
+			string ordNum, itemNum, itemDesc, taxEx, author, ISBN;
+			int quantity, pubYear, pubMonth, pubDay;
+			double price, cost;
+			mediaFile >> ordNum >>itemNum >> itemDesc >> quantity >> price
 			>> cost >> taxEx >> pubYear >> pubMonth >> pubDay >> author >> ISBN;
 			if(ordNum != orderNumber){
 				continue;
@@ -119,12 +122,13 @@ void Order::readMediaItems(){
 				tempMediaItem->setOrderNumber(ordNum);
 				tempMediaItem->setItemNumber(itemNum);
 				tempMediaItem->setItemDescription(itemDesc);
-				int iquant = stoi(quantity);
-				tempMediaItem->setQuantity(iquant);
-				double dPrice = stod(price);
-				tempMediaItem->setCustomerCost(dPrice);
-				double dCost = stod(cost);
-				tempMediaItem->setVendorCost(dCost);
+//				int iquant = stoi(quantity);
+//				double dCost = stod(cost);
+//				double dPrice = stod(price);
+				tempMediaItem->setQuantity(quantity);
+				tempMediaItem->setCustomerCost(price);
+
+				tempMediaItem->setVendorCost(cost);
 				bool taxed;
 				if(taxEx == "Y" || taxEx == "y"){
 					taxed = true;
@@ -136,10 +140,10 @@ void Order::readMediaItems(){
 					cout << "Tax exemption error, please bribe your representatives." << endl;
 				}
 				tempMediaItem->setTaxExempt(taxed);
-				int intYear = stoi(pubYear);
-				int intMonth = stoi(pubMonth);
-				int intDay = stoi(pubDay);
-				Date pubDate(intDay, intMonth, intYear);
+//				int intYear = stoi(pubYear);
+//				int intMonth = stoi(pubMonth);
+//				int intDay = stoi(pubDay);
+				Date pubDate(pubDay, pubMonth, pubYear);
 				tempMediaItem->setPublicationDate(pubDate);
 				tempMediaItem->setAuthorName(author);
 				tempMediaItem->setISBNNumber(ISBN);
@@ -160,7 +164,7 @@ void Order::readElectronicItems(){
 			string ordNum, itemNum, itemDesc, taxEx, type;
 			int quantity, warrMonths;
 			double price, cost;
-			ElectronicFile >> ordNum >>itemNum >> itemDesc >> quantity >> price \
+			ElectronicFile >> ordNum >>itemNum >> itemDesc >> quantity >> price
 			>> cost >> taxEx >> type >> warrMonths;
 			if(ordNum != orderNumber){
 				continue;
@@ -170,11 +174,11 @@ void Order::readElectronicItems(){
 				tempElectronicItem->setOrderNumber(ordNum);
 				tempElectronicItem->setItemNumber(itemNum);
 				tempElectronicItem->setItemDescription(itemDesc);
-				//int iquant = stoi(quantity);
+//				int iquant = stoi(quantity);
+//				double dCost = stod(cost);
+//				double dPrice = stod(price);
 				tempElectronicItem->setQuantity(quantity);
-				//double dPrice = stod(price);
 				tempElectronicItem->setCustomerCost(price);
-				//double dCost = stod(cost);
 				tempElectronicItem->setVendorCost(cost);
 				bool taxed;
 				if(taxEx == "Y" || taxEx == "y"){
