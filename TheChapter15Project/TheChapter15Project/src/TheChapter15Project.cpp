@@ -23,8 +23,8 @@ using namespace std;
 void printFood(vector<OrderItem*> ordPtr, string);
 void printMedia(vector<OrderItem*> ordPtr, string);
 void printElectronics(vector<OrderItem*> ordPtr, string);
-const char* stoc(string);
-string ctos(const char*[], int);
+//const char* stoc(string);
+//string ctos(const char*[], int);
 
 int main(int argc, const char *argv[]) {
 
