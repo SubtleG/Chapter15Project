@@ -12,9 +12,22 @@ using namespace std;
 
 Order::Order() {
 	// TODO Auto-generated constructor stub
-	readFoodItems();
-	readMediaItems();
-	readElectronicItems();
+	bool readError = false;
+	readError = readFoodItems();
+	if (readError){
+		this->orderCustomer = nullptr;
+		orderNumber = "Failed to open file";
+	}
+	readError = readMediaItems();
+	if (readError){
+		this->orderCustomer = nullptr;
+		orderNumber = "Failed to open file";
+	}
+	readError = readElectronicItems();
+	if (readError){
+		this->orderCustomer = nullptr;
+		orderNumber = "Failed to open file";
+	}
 }
 Order::Order(vector<Customer*>* tempPoint, string custID, string orderNum){
 	//if cust exists read files
@@ -31,10 +44,24 @@ Order::Order(vector<Customer*>* tempPoint, string custID, string orderNum){
 		}
 	}
 	if(exists){
-		cout << "The customer " << custID << " was found." << endl;
-		readFoodItems();
-		readMediaItems();
-		readElectronicItems();
+		bool readError = false;
+//		// prints the customer that was found
+//		cout << "The customer " << custID << " was found." << endl;
+		readError = readFoodItems();
+		if (readError){
+			this->orderCustomer = nullptr;
+			orderNumber = "Failed to open file";
+		}
+		readError = readMediaItems();
+		if (readError){
+			this->orderCustomer = nullptr;
+			orderNumber = "Failed to open file";
+		}
+		readError = readElectronicItems();
+		if (readError){
+			this->orderCustomer = nullptr;
+			orderNumber = "Failed to open file";
+		}
 	}
 	else{
 		this->orderCustomer = nullptr;
@@ -48,157 +75,184 @@ Order::~Order() {
 	//for loop?
 }
 
-void Order::readFoodItems(){
-	ifstream foodFile;
-	foodFile.open("FoodItems.txt");
-	if (foodFile.fail()){
-		cout << "Error opening food file " << endl;
-	}
-	else{
-		while(!(foodFile.eof())){
-			string ordNum, itemNum, itemDesc, taxEx, calories, fat;
-			int quantity, expYear, expMonth, expDay;
-			double price, cost;
-			foodFile >> ordNum >>itemNum >> itemDesc >> quantity >> price \
-			>> cost >> taxEx >> expYear >> expMonth >> expDay >> calories >> fat;
-			if(ordNum != orderNumber){
-				continue;
-			}
-			else{
-				FoodItem *tempFoodItem = new FoodItem();
-				tempFoodItem->setOrderNumber(ordNum);
-				tempFoodItem->setItemNumber(itemNum);
-				tempFoodItem->setItemDescription(itemDesc);
-//				int iquant = stoi(quantity);
-//				double dCost = stod(cost);
-//				double dPrice = stod(price);
-				tempFoodItem->setQuantity(quantity);
-				tempFoodItem->setCustomerCost(price);
-				tempFoodItem->setVendorCost(cost);
-				bool taxed;
-				if(taxEx == "Y" || taxEx == "y"){
-					taxed = true;
-				}
-				else if(taxEx == "N" || taxEx == "n"){
-					taxed = false;
-				}
-				else{
-					cout << "Tax exemption error, please bribe your representatives." << endl;
-				}
-				tempFoodItem->setTaxExempt(taxed);
-//				int intYear = stoi(expYear);
-//				int intMonth = stoi(expMonth);
-//				int intDay = stoi(expDay);
-				Date expDate(expDay, expMonth, expYear);
-				tempFoodItem->setExpirationDate(expDate);
-				int intCal = stoi(calories);
-				tempFoodItem->setCalories(intCal);
-				int intFat = stoi(fat);
-				tempFoodItem->setFat(intFat);
-				itemsInOrder.push_back(tempFoodItem);
-			}
-		}
-    	foodFile.close();
-	}
-}
-void Order::readMediaItems(){
-	ifstream mediaFile;
-	mediaFile.open("MediaItems.txt");
-	if (mediaFile.fail()){
-		cout << "Error opening media file " << endl;
-	}
-	else{
-		while(!(mediaFile.eof())){
-			string ordNum, itemNum, itemDesc, taxEx, author, ISBN;
-			int quantity, pubYear, pubMonth, pubDay;
-			double price, cost;
-			mediaFile >> ordNum >>itemNum >> itemDesc >> quantity >> price
-			>> cost >> taxEx >> pubYear >> pubMonth >> pubDay >> author >> ISBN;
-			if(ordNum != orderNumber){
-				continue;
-			}
-			else{
-				MediaItem *tempMediaItem = new MediaItem();
-				tempMediaItem->setOrderNumber(ordNum);
-				tempMediaItem->setItemNumber(itemNum);
-				tempMediaItem->setItemDescription(itemDesc);
-//				int iquant = stoi(quantity);
-//				double dCost = stod(cost);
-//				double dPrice = stod(price);
-				tempMediaItem->setQuantity(quantity);
-				tempMediaItem->setCustomerCost(price);
+bool Order::readFoodItems(){
 
-				tempMediaItem->setVendorCost(cost);
-				bool taxed;
-				if(taxEx == "Y" || taxEx == "y"){
-					taxed = true;
-				}
-				else if(taxEx == "N" || taxEx == "n"){
-					taxed = false;
+	try{
+		ifstream foodFile;
+		foodFile.open("FoodItems.txt");
+		if (foodFile.fail()){
+//			cout << "Error opening food file " << endl;
+			throw "fooditems error";
+		}
+		else{
+			while(!(foodFile.eof())){
+				string ordNum, itemNum, itemDesc, taxEx, calories, fat;
+				int quantity, expYear, expMonth, expDay;
+				double price, cost;
+				foodFile >> ordNum >>itemNum >> itemDesc >> quantity >> price \
+				>> cost >> taxEx >> expYear >> expMonth >> expDay >> calories >> fat;
+				if(ordNum != orderNumber){
+					continue;
 				}
 				else{
-					cout << "Tax exemption error, please bribe your representatives." << endl;
+					FoodItem *tempFoodItem = new FoodItem();
+					tempFoodItem->setOrderNumber(ordNum);
+					tempFoodItem->setItemNumber(itemNum);
+					tempFoodItem->setItemDescription(itemDesc);
+	//				int iquant = stoi(quantity);
+	//				double dCost = stod(cost);
+	//				double dPrice = stod(price);
+					tempFoodItem->setQuantity(quantity);
+					tempFoodItem->setCustomerCost(price);
+					tempFoodItem->setVendorCost(cost);
+					bool taxed;
+					if(taxEx == "Y" || taxEx == "y"){
+						taxed = true;
+					}
+					else if(taxEx == "N" || taxEx == "n"){
+						taxed = false;
+					}
+					else{
+						cout << "Tax exemption error, please bribe your representatives." << endl;
+					}
+					tempFoodItem->setTaxExempt(taxed);
+	//				int intYear = stoi(expYear);
+	//				int intMonth = stoi(expMonth);
+	//				int intDay = stoi(expDay);
+					Date expDate(expDay, expMonth, expYear);
+					tempFoodItem->setExpirationDate(expDate);
+					int intCal = stoi(calories);
+					tempFoodItem->setCalories(intCal);
+					int intFat = stoi(fat);
+					tempFoodItem->setFat(intFat);
+					itemsInOrder.push_back(tempFoodItem);
 				}
-				tempMediaItem->setTaxExempt(taxed);
-//				int intYear = stoi(pubYear);
-//				int intMonth = stoi(pubMonth);
-//				int intDay = stoi(pubDay);
-				Date pubDate(pubDay, pubMonth, pubYear);
-				tempMediaItem->setPublicationDate(pubDate);
-				tempMediaItem->setAuthorName(author);
-				tempMediaItem->setISBNNumber(ISBN);
-				itemsInOrder.push_back(tempMediaItem);
 			}
+			foodFile.close();
 		}
-    	mediaFile.close();
-	}
+	}//try
+	catch(...){
+		cout << "There was an error reading food items." << endl;
+		return true;
+	}//catch
+	return false;
 }
-void Order::readElectronicItems(){
-	ifstream ElectronicFile;
-	ElectronicFile.open("ElectronicItems.txt");
-	if (ElectronicFile.fail()){
-		cout << "Error opening electronic file " << endl;
-	}
-	else{
-		while(!(ElectronicFile.eof())){
-			string ordNum, itemNum, itemDesc, taxEx, type;
-			int quantity, warrMonths;
-			double price, cost;
-			ElectronicFile >> ordNum >>itemNum >> itemDesc >> quantity >> price
-			>> cost >> taxEx >> type >> warrMonths;
-			if(ordNum != orderNumber){
-				continue;
-			}
-			else{
-				ElectronicItem *tempElectronicItem = new ElectronicItem();
-				tempElectronicItem->setOrderNumber(ordNum);
-				tempElectronicItem->setItemNumber(itemNum);
-				tempElectronicItem->setItemDescription(itemDesc);
-//				int iquant = stoi(quantity);
-//				double dCost = stod(cost);
-//				double dPrice = stod(price);
-				tempElectronicItem->setQuantity(quantity);
-				tempElectronicItem->setCustomerCost(price);
-				tempElectronicItem->setVendorCost(cost);
-				bool taxed;
-				if(taxEx == "Y" || taxEx == "y"){
-					taxed = true;
-				}
-				else if(taxEx == "N" || taxEx == "n"){
-					taxed = false;
+bool Order::readMediaItems(){
+
+	try{
+		ifstream mediaFile;
+		mediaFile.open("MediaItems.txt");
+		if (mediaFile.fail()){
+//			cout << "Error opening media file " << endl;
+			throw "mediaitems error";
+		}
+		else{
+			while(!(mediaFile.eof())){
+				string ordNum, itemNum, itemDesc, taxEx, author, ISBN;
+				int quantity, pubYear, pubMonth, pubDay;
+				double price, cost;
+				mediaFile >> ordNum >>itemNum >> itemDesc >> quantity >> price
+				>> cost >> taxEx >> pubYear >> pubMonth >> pubDay >> author >> ISBN;
+				if(ordNum != orderNumber){
+					continue;
 				}
 				else{
-					cout << "Tax exemption error, please bribe your representatives." << endl;
+					MediaItem *tempMediaItem = new MediaItem();
+					tempMediaItem->setOrderNumber(ordNum);
+					tempMediaItem->setItemNumber(itemNum);
+					tempMediaItem->setItemDescription(itemDesc);
+	//				int iquant = stoi(quantity);
+	//				double dCost = stod(cost);
+	//				double dPrice = stod(price);
+					tempMediaItem->setQuantity(quantity);
+					tempMediaItem->setCustomerCost(price);
+
+					tempMediaItem->setVendorCost(cost);
+					bool taxed;
+					if(taxEx == "Y" || taxEx == "y"){
+						taxed = true;
+					}
+					else if(taxEx == "N" || taxEx == "n"){
+						taxed = false;
+					}
+					else{
+						cout << "Tax exemption error, please bribe your representatives." << endl;
+					}
+					tempMediaItem->setTaxExempt(taxed);
+	//				int intYear = stoi(pubYear);
+	//				int intMonth = stoi(pubMonth);
+	//				int intDay = stoi(pubDay);
+					Date pubDate(pubDay, pubMonth, pubYear);
+					tempMediaItem->setPublicationDate(pubDate);
+					tempMediaItem->setAuthorName(author);
+					tempMediaItem->setISBNNumber(ISBN);
+					itemsInOrder.push_back(tempMediaItem);
 				}
-				tempElectronicItem->setTaxExempt(taxed);
-				int intType = stoi(type);
-				tempElectronicItem->setType(intType);
-				tempElectronicItem->setWarrantyMonths(warrMonths);
-				itemsInOrder.push_back(tempElectronicItem);
 			}
+			mediaFile.close();
 		}
-		ElectronicFile.close();
-	}
+	}//try
+	catch(...){
+		cout << "There was an error reading media items." << endl;
+		return true;
+	}//catch
+	return false;
+}
+bool Order::readElectronicItems(){
+
+	try{
+		ifstream ElectronicFile;
+		ElectronicFile.open("ElectronicItems.txt");
+		if (ElectronicFile.fail()){
+//			cout << "Error opening electronic file " << endl;
+			throw "electronics error";
+		}
+		else{
+			while(!(ElectronicFile.eof())){
+				string ordNum, itemNum, itemDesc, taxEx, type;
+				int quantity, warrMonths;
+				double price, cost;
+				ElectronicFile >> ordNum >>itemNum >> itemDesc >> quantity >> price
+				>> cost >> taxEx >> type >> warrMonths;
+				if(ordNum != orderNumber){
+					continue;
+				}
+				else{
+					ElectronicItem *tempElectronicItem = new ElectronicItem();
+					tempElectronicItem->setOrderNumber(ordNum);
+					tempElectronicItem->setItemNumber(itemNum);
+					tempElectronicItem->setItemDescription(itemDesc);
+	//				int iquant = stoi(quantity);
+	//				double dCost = stod(cost);
+	//				double dPrice = stod(price);
+					tempElectronicItem->setQuantity(quantity);
+					tempElectronicItem->setCustomerCost(price);
+					tempElectronicItem->setVendorCost(cost);
+					bool taxed;
+					if(taxEx == "Y" || taxEx == "y"){
+						taxed = true;
+					}
+					else if(taxEx == "N" || taxEx == "n"){
+						taxed = false;
+					}
+					else{
+						cout << "Tax exemption error, please bribe your representatives." << endl;
+					}
+					tempElectronicItem->setTaxExempt(taxed);
+					int intType = stoi(type);
+					tempElectronicItem->setType(intType);
+					tempElectronicItem->setWarrantyMonths(warrMonths);
+					itemsInOrder.push_back(tempElectronicItem);
+				}
+			}
+			ElectronicFile.close();
+		}
+	}//try
+	catch(...){
+		cout << "There was an error reading electronics items." << endl;
+		return true;
+	}//catch
+	return false;
 }
 double Order::getTotalOfOrder(){
 	double tot = 0.0;

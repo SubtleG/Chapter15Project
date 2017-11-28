@@ -25,9 +25,9 @@ public:
 
 	Order(vector<Customer*>*, string, string);
 
-	void readFoodItems();
-	void readMediaItems();
-	void readElectronicItems();
+	bool readFoodItems();
+	bool readMediaItems();
+	bool readElectronicItems();
 	double getTotalOfOrder();
 
 	string getOrderNumber(void);

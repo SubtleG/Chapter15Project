@@ -19,6 +19,7 @@
 #include "Date.hpp"
 #include "Customer.hpp"
 #include <memory>
+#include <exception>
 using namespace std;
 
 void printFood(vector<OrderItem*> ordPtr, string);
@@ -40,28 +41,35 @@ int main(int argc, const char *argv[]) {
 	//Customer *tempCust = new Customer();
 
 	//#2
-	ifstream custFile;
-	custFile.open("CustomerFile.txt");
-	if (custFile.fail()){
-		cout << "Error opening file " << endl;
-	}
-	else{
-		while(!(custFile.eof())){
-			string custNum, custName, custEmail;
-			int year, month, day;
-//			//test for infinite loop
-//			cout << "custLoop" << endl;
-			custFile >> custNum >> custName >> custEmail >> year >> month >> day;
-			Customer *custNum1 = new Customer;
-			custNum1->setCustomerNumber(custNum);
-			custNum1->setCustomerName(custName);
-			custNum1->setEmail(custEmail);
-			Date custJoin(day, month, year);
-			custNum1->setDateJoined(custJoin);
-			theCustomers.push_back(custNum1);
+	try{
+		ifstream custFile;
+		custFile.open("CustomerFile.txt");
+		if (custFile.fail()){
+//			cout << "Error opening file " << endl;
+			throw "customerfile error";
 		}
-    	custFile.close();
-	}
+		else{
+			while(!(custFile.eof())){
+				string custNum, custName, custEmail;
+				int year, month, day;
+	//			//test for infinite loop
+	//			cout << "custLoop" << endl;
+				custFile >> custNum >> custName >> custEmail >> year >> month >> day;
+				Customer *custNum1 = new Customer;
+				custNum1->setCustomerNumber(custNum);
+				custNum1->setCustomerName(custName);
+				custNum1->setEmail(custEmail);
+				Date custJoin(day, month, year);
+				custNum1->setDateJoined(custJoin);
+				theCustomers.push_back(custNum1);
+			}
+			custFile.close();
+		}
+	}//try
+	catch(...){
+		cout << "There was an error reading the customer file.";
+		return 1;
+	}//catch
 //	tempCust = nullptr;
 //	delete []tempCust;
 
@@ -74,46 +82,59 @@ int main(int argc, const char *argv[]) {
 //	Order *tempOrder = new Order();
 
 	//#4
-	ifstream orderFile;
-	orderFile.open("OrderFile.txt");
-	if (orderFile.fail()){
-		cout << "Error opening file " << endl;
-	}
-	else{
-		while(!(orderFile.eof())){
-//			//test for infinite loop
-//			cout << "orderLoop" << endl;
-			string ordID, custNum;
-			int ordYear, ordMonth, ordDay;
-			orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
-			// can check for existing customer with custNum to see if they exist
-//			// Dumb Pointer
-//			// START MEMORY LEAK
-//			//Order *tempOrder = new Order(&theCustomers, custNum, ordID);
-//			// END MEMORY LEAK
-
-			// Smart Pointer
-			unique_ptr<Order>tempOrder(new Order(&theCustomers, custNum, ordID));
-
-//			//Order ordNum1(theCustomers, custNum)
-//			"FAILFAILFAIL"
-			if(tempOrder->getOrderNumber() == "FAILFAILFAIL"){
-//				// Dumb Pointer?
-//				delete tempOrder;
-			}
-			else{
-				tempOrder->setOrderNumber(ordID);
-				Date ordDate(ordDay, ordMonth, ordYear);
-				tempOrder->setOrderDate(ordDate);
-//				//Dumb Pointer
-//				theOrders.push_back(tempOrder);
-				//Smart Pointer
-
-				//Debugger terminates here 8:32pm....
-				theOrders.push_back(move(tempOrder));
-			}
+	try{
+		ifstream orderFile;
+		orderFile.open("OrderFile.txt");
+		if (orderFile.fail()){
+	//		cout << "Error opening file " << endl;
+			throw "There was an error reading the OrderFile.txt";
 		}
-    	orderFile.close();
+		else{
+			while(!(orderFile.eof())){
+	//			//test for infinite loop
+	//			cout << "orderLoop" << endl;
+				string ordID, custNum;
+				int ordYear, ordMonth, ordDay;
+				orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
+				// can check for existing customer with custNum to see if they exist
+	//			// Dumb Pointer
+	//			// START MEMORY LEAK
+	//			//Order *tempOrder = new Order(&theCustomers, custNum, ordID);
+	//			// END MEMORY LEAK
+
+				// Smart Pointer
+				unique_ptr<Order>tempOrder(new Order(&theCustomers, custNum, ordID));
+
+	//			//Order ordNum1(theCustomers, custNum)
+	//			"FAILFAILFAIL"
+				if(tempOrder->getOrderNumber() == "FAILFAILFAIL"){
+	//				// Dumb Pointer?
+	//				delete tempOrder;
+				}
+//				else if(tempOrder == nullptr){
+//
+//				}
+				else if(tempOrder.get()->getOrderNumber() == "Failed to open file"){
+					return 1;
+				}
+				else{
+					tempOrder->setOrderNumber(ordID);
+					Date ordDate(ordDay, ordMonth, ordYear);
+					tempOrder->setOrderDate(ordDate);
+	//				//Dumb Pointer
+	//				theOrders.push_back(tempOrder);
+					//Smart Pointer
+
+					//Debugger terminates here 11/27/2017 8:32pm....
+					theOrders.push_back(move(tempOrder));
+				}
+			}
+			orderFile.close();
+		}
+	}//try
+	catch(...){
+		cout << "There was an error opening the OrderFile.txt" << endl;
+		return 1;
 	}
 //	tempOrder = nullptr;
 //	delete []tempOrder;
@@ -124,21 +145,30 @@ int main(int argc, const char *argv[]) {
 	int ordPlaceNum = 0;
 	if (argc == 2){
 		//Only print the order that was sent in
-		for(unsigned int i = 0; i < numTimes; i++){
-			//const char* tempCha = (theOrders[i]->getOrderNumber()).c_str();
-			//cout << argv[argc] << endl;
-			if(theOrders[i]->getOrderNumber() == argv[argc-1]){
-				ordPlaceNum = i;
-				numTimes = i+1;
-				break;
+		try{
+			for(unsigned int i = 0; i < numTimes; i++){
+				//const char* tempCha = (theOrders[i]->getOrderNumber()).c_str();
+				//cout << argv[argc] << endl;
+				if(theOrders[i]->getOrderNumber() == argv[argc-1]){
+					ordPlaceNum = i;
+					numTimes = i+1;
+					break;
+				}
+				if(i == (numTimes-1)){
+					throw "Order not found";
+				}
 			}
-		}
-		if(numTimes > theOrders.size()){
-			cout << "Couldn't find that order" << endl;
+			if(numTimes > theOrders.size()){
+//				cout << "Couldn't find that order" << endl;
+//				return 1;
+				throw "Order not found";
+			}
+		}//try
+		catch(...){
+			cout << "Error! Could not find '" << argv[argc-1] << "'." << endl;
 			return 1;
 		}
-
-	}
+	}//if
 	if (argc == 1){
 		//Print everything
 		unsigned int numTimes = theOrders.size();
