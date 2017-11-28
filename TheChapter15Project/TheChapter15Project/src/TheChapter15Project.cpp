@@ -37,8 +37,11 @@ int main(int argc, const char *argv[]) {
 	}
 
 	//#1
-	vector<Customer*> theCustomers;
-	//Customer *tempCust = new Customer();
+//	// Dumb Pointer
+//	vector<Customer*> theCustomers;
+//	// Smart Pointer
+	vector<shared_ptr<Customer>> theCustomers;
+
 
 	//#2
 	try{
@@ -52,16 +55,19 @@ int main(int argc, const char *argv[]) {
 			while(!(custFile.eof())){
 				string custNum, custName, custEmail;
 				int year, month, day;
-	//			//test for infinite loop
-	//			cout << "custLoop" << endl;
+//				//test for infinite loop
+//				cout << "custLoop" << endl;
 				custFile >> custNum >> custName >> custEmail >> year >> month >> day;
-				Customer *custNum1 = new Customer;
+//				// Dumb Pointer
+//				Customer *custNum1 = new Customer;
+//				// Smart Pointer
+				shared_ptr<Customer>custNum1(new Customer());
 				custNum1->setCustomerNumber(custNum);
 				custNum1->setCustomerName(custName);
 				custNum1->setEmail(custEmail);
 				Date custJoin(day, month, year);
 				custNum1->setDateJoined(custJoin);
-				theCustomers.push_back(custNum1);
+				theCustomers.push_back(move(custNum1));
 			}
 			custFile.close();
 		}
@@ -103,7 +109,8 @@ int main(int argc, const char *argv[]) {
 	//			// END MEMORY LEAK
 
 				// Smart Pointer
-				unique_ptr<Order>tempOrder(new Order(&theCustomers, custNum, ordID));
+				//vector<shared_ptr<Order>>passOrders =
+				unique_ptr<Order>tempOrder = unique_ptr<Order>(new Order(theCustomers, custNum, ordID));
 
 	//			//Order ordNum1(theCustomers, custNum)
 	//			"FAILFAILFAIL"

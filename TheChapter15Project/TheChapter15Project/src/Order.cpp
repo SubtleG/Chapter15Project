@@ -29,12 +29,13 @@ Order::Order() {
 		orderNumber = "Failed to open file";
 	}
 }
-Order::Order(vector<Customer*>* tempPoint, string custID, string orderNum){
+Order::Order(vector<shared_ptr<Customer>> tempPoint, string custID, string orderNum){
 	//if cust exists read files
 	bool exists = true;
-	for(unsigned int i = 0;  i < tempPoint->size(); i++){
-		if (tempPoint->at(i)->getCustomerNumber() == custID){
-			this->orderCustomer = tempPoint->at(i);
+	for(unsigned int i = 0;  i < tempPoint.size(); i++){
+		if (tempPoint[i].get()->getCustomerNumber() == custID){
+			//this->orderCustomer = tempPoint->at(i);
+			this->orderCustomer = tempPoint[i].get();
 			this->orderNumber = orderNum;
 			exists = true;
 			break;

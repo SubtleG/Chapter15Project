@@ -23,7 +23,8 @@ public:
 	Order();
 	virtual ~Order();
 
-	Order(vector<Customer*>*, string, string);
+	//Order(vector<Customer*>*, string, string);
+	Order(vector<shared_ptr<Customer>>, string, string);
 
 	bool readFoodItems();
 	bool readMediaItems();
