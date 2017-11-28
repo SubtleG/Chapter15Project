@@ -18,6 +18,7 @@
 #include "MediaItem.hpp"
 #include "Date.hpp"
 #include "Customer.hpp"
+#include <memory>
 using namespace std;
 
 void printFood(vector<OrderItem*> ordPtr, string);
@@ -65,7 +66,11 @@ int main(int argc, const char *argv[]) {
 //	delete []tempCust;
 
 	//#3
-	vector<Order*> theOrders;
+	//Dumb pointer
+	//vector<Order*> theOrders;
+
+	//Smart Pointer
+	vector<unique_ptr<Order>> theOrders;
 //	Order *tempOrder = new Order();
 
 	//#4
@@ -82,21 +87,30 @@ int main(int argc, const char *argv[]) {
 			int ordYear, ordMonth, ordDay;
 			orderFile >> ordID >> ordYear >> ordMonth >> ordDay >> custNum;
 			// can check for existing customer with custNum to see if they exist
+//			// Dumb Pointer
+//			// START MEMORY LEAK
+//			//Order *tempOrder = new Order(&theCustomers, custNum, ordID);
+//			// END MEMORY LEAK
 
-			// START MEMORY LEAK
-			Order *tempOrder = new Order(&theCustomers, custNum, ordID);
-			// END MEMORY LEAK
+			// Smart Pointer
+			unique_ptr<Order>tempOrder(new Order(&theCustomers, custNum, ordID));
 
 //			//Order ordNum1(theCustomers, custNum)
 //			"FAILFAILFAIL"
 			if(tempOrder->getOrderNumber() == "FAILFAILFAIL"){
-				delete tempOrder;
+//				// Dumb Pointer?
+//				delete tempOrder;
 			}
 			else{
 				tempOrder->setOrderNumber(ordID);
 				Date ordDate(ordDay, ordMonth, ordYear);
 				tempOrder->setOrderDate(ordDate);
-				theOrders.push_back(tempOrder);
+//				//Dumb Pointer
+//				theOrders.push_back(tempOrder);
+				//Smart Pointer
+
+				//Debugger terminates here 8:32pm....
+				theOrders.push_back(move(tempOrder));
 			}
 		}
     	orderFile.close();
@@ -127,7 +141,10 @@ int main(int argc, const char *argv[]) {
 	}
 	if (argc == 1){
 		//Print everything
-		numTimes = theOrders.size();
+		unsigned int numTimes = theOrders.size();
+		//numTimes isn't used?
+		numTimes += 1;
+		numTimes -= 1;
 	}
 
 	//#5
@@ -190,9 +207,10 @@ int main(int argc, const char *argv[]) {
 	}
 	cout << endl;
 	cout << "Program ending, Have a nice day!" << endl; // prints Program ending, Have a nice day!
+//	// DumbPointers?
+//	theCustomers.clear();
+//	theOrders.clear();
 
-	theCustomers.clear();
-	theOrders.clear();
 
 	return 0;
 }

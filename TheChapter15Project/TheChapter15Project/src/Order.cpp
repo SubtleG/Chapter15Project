@@ -44,7 +44,7 @@ Order::Order(vector<Customer*>* tempPoint, string custID, string orderNum){
 }
 Order::~Order() {
 	// TODO Auto-generated destructor stub
-	itemsInOrder.clear();
+	//itemsInOrder.clear();
 	//for loop?
 }
 
